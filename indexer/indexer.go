@@ -143,7 +143,8 @@ func OpenKeysReader(cacheDir, index string) (io.ReadCloser, error) {
 func LoadKey(cacheDir, index, key string) (json.RawMessage, error) {
 	badgerDir := filepath.Join(cacheDir, index, "badger")
 	indexer, err := NewBadger(BadgerConfig{
-		Dir: badgerDir,
+		Dir:      badgerDir,
+		ReadOnly: true,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("open indexer: %w", err)

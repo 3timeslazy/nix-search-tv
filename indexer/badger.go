@@ -2,12 +2,14 @@ package indexer
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
 	"strconv"
 
 	"github.com/dgraph-io/badger/v4"
+	"github.com/dgraph-io/ristretto/v2/z"
 )
 
 type Badger struct {
@@ -17,13 +19,15 @@ type Badger struct {
 type BadgerConfig struct {
 	Dir      string
 	InMemory bool
+	ReadOnly bool
 }
 
 func NewBadger(conf BadgerConfig) (*Badger, error) {
 	opts := badger.
 		DefaultOptions(conf.Dir).
 		WithLoggingLevel(badger.ERROR).
-		WithInMemory(conf.InMemory)
+		WithInMemory(conf.InMemory).
+		WithReadOnly(conf.ReadOnly)
 	db, err := badger.Open(opts)
 	if err != nil {
 		return nil, fmt.Errorf("open badger: %w", err)
@@ -44,6 +48,27 @@ type Package struct {
 // that the indexer expects.
 type Indexable struct {
 	Packages map[string]json.RawMessage `json:"packages"`
+}
+
+func (bdg *Badger) IterAll(cb func(v []byte) bool) error {
+	stream := bdg.badger.NewStream()
+
+	stream.ChooseKey = func(item *badger.Item) bool {
+		ok := false
+		item.Value(func(val []byte) error {
+			ok = cb(val)
+			return nil
+		})
+		if ok {
+			fmt.Println(string(item.Key()))
+		}
+		return false
+	}
+	stream.Send = func(_ *z.Buffer) error {
+		return nil
+	}
+
+	return stream.Orchestrate(context.Background())
 }
 
 func (indexer *Badger) Index(data io.Reader, indexedKeys io.Writer) error {
