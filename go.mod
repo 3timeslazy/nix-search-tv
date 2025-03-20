@@ -9,6 +9,7 @@ require (
 	github.com/dgraph-io/badger/v4 v4.5.1
 	github.com/jubnzv/go-tmux v0.0.0-20240808014214-bf465a395e96
 	github.com/urfave/cli/v3 v3.0.0-beta1
+	github.com/yuin/goldmark v1.7.8
 	golang.org/x/term v0.29.0
 )
 

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"os"
+	"regexp"
 	"slices"
 	"strings"
 	"testing"
@@ -54,5 +55,16 @@ func TestFetcherOutput(t *testing.T) {
 		if !json.Valid(pkgContent) {
 			t.Fatalf("package content is not a valid JSON:\nPackage: %s\nContent:%s", pkgName, string(pkgContent))
 		}
+
+		buf := bytes.Buffer{}
+		pkg := Package{}
+		assert.NoError(t, json.Unmarshal(pkgContent, &pkg))
+		Preview(&buf, pkg)
+
+		if pkgName != "chickenPackages_5.chickenEggs.regex-case" && html.Match(buf.Bytes()) {
+			t.Fatalf("an HTML tag found:\nPackage: %s\nContent:%s", pkgName, string(buf.Bytes()))
+		}
 	}
 }
+
+var html = regexp.MustCompile("<\\w+>")
