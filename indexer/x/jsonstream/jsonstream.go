@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"strings"
 )
 
 // ParsePackages  parses packages.json file of the format below
@@ -91,4 +92,59 @@ func ParsePackages(pkgs io.Reader, cb func(pkgName string, pkgContent []byte) er
 	}
 
 	return nil
+}
+
+func FindPath(pkg io.Reader, path string) (string, error) {
+	if path == "" {
+		return "", nil
+	}
+
+	// { a: 1, b: { c: 2 } }
+	dec := json.NewDecoder(pkg)
+
+	steps := strings.Split(path, ".")
+	for i := range steps {
+		// ↓ (1)      ↓ (2)
+		// { a: 1, b: { c: 2 } }
+		token, err := dec.Token()
+		if err != nil {
+			return "", fmt.Errorf("input is not a valid json object: %w", err)
+		}
+
+		for {
+			//   ↓ (1)   ↓ (2)  ↓ (3)
+			// { a: 1,   b: {   c: 2 } }
+			token, err = dec.Token()
+			if err != nil {
+				return "", fmt.Errorf("get next key: %w", err)
+			}
+			if token == json.Delim('}') {
+				break
+			}
+
+			key, ok := token.(string)
+			if !ok {
+				return "", fmt.Errorf("unexpected token type %T", token)
+			}
+			if key != steps[i] {
+				err = dec.Decode(&json.RawMessage{})
+				if err != nil {
+					return "", fmt.Errorf("consume value: %w", err)
+				}
+				continue
+			}
+
+			if i == len(steps)-1 {
+				v := ""
+				if err = dec.Decode(&v); err != nil {
+					return "", fmt.Errorf("consume string: %w", err)
+				}
+				return v, nil
+			}
+
+			break
+		}
+	}
+
+	return "", nil
 }

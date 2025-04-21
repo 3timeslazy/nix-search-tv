@@ -11,6 +11,7 @@ import (
 
 	"github.com/3timeslazy/nix-search-tv/config"
 	"github.com/3timeslazy/nix-search-tv/indexes/indices"
+	"github.com/3timeslazy/nix-search-tv/indexes/nuschtos"
 	"github.com/3timeslazy/nix-search-tv/indexes/renderdocs"
 
 	"github.com/urfave/cli/v3"
@@ -91,6 +92,18 @@ func validateIndexes(indexNames []string) error {
 }
 
 func RegisterRenderDocs(conf config.Config) ([]string, error) {
+	const nixvim = "nixvim"
+	err := indices.Register(
+		nixvim,
+		nuschtos.NewFetcher("https://nix-community.github.io/nixvim/search/meta/"),
+		func() indices.Pkg {
+			return &nuschtos.Package{}
+		},
+	)
+	if err != nil {
+		return nil, fmt.Errorf("register nixvim: %w", err)
+	}
+
 	for index, indexHTML := range conf.Experimental.RenderDocsIndexes {
 		err := indices.Register(
 			index,
@@ -106,5 +119,7 @@ func RegisterRenderDocs(conf config.Config) ([]string, error) {
 		}
 	}
 
-	return slices.Collect(maps.Keys(conf.Experimental.RenderDocsIndexes)), nil
+	indexes := slices.Collect(maps.Keys(conf.Experimental.RenderDocsIndexes))
+	indexes = append(indexes, nixvim)
+	return indexes, nil
 }
