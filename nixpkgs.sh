@@ -16,6 +16,7 @@ SEARCH_SNIPPET_KEY="ctrl-w"
 OPEN_SOURCE_KEY="ctrl-s"
 OPEN_HOMEPAGE_KEY="ctrl-o"
 NIX_SHELL_KEY="ctrl-i"
+NOOGLE_KEY="ctrl-l"
 
 OPENER="xdg-open"
 
@@ -71,6 +72,7 @@ HEADER="$OPEN_HOMEPAGE_KEY - open homepage
 $OPEN_SOURCE_KEY - open source
 $SEARCH_SNIPPET_KEY - search github for snippets
 $NIX_SHELL_KEY - nix-shell
+$NOOGLE_KEY - noogle search
 "
 
 FZF_BINDS=""
@@ -107,6 +109,7 @@ eval "$CMD print | fzf \
     --bind '$OPEN_SOURCE_KEY:execute($CMD source \$(cat $STATE_FILE) {} | xargs $OPENER)' \
     --bind '$OPEN_HOMEPAGE_KEY:execute($CMD homepage \$(cat $STATE_FILE) {} | xargs $OPENER)' \
     --bind $'$SEARCH_SNIPPET_KEY:execute($SEARCH_SNIPPET_CMD | xargs $OPENER)' \
+    --bind $'$NOOGLE_KEY:change-preview(noogle show --json {} | jq -r '.content.content' | glow)+reload(noogle list)' \
     --bind $'$NIX_SHELL_KEY:become($NIX_SHELL_CMD)' \
     --layout reverse \
     --scheme history \
