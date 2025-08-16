@@ -4,12 +4,17 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     flake-utils.url = "github:numtide/flake-utils";
+    noogle-cli = {
+      url = "github:juliamertz/noogle-cli";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {
     self,
     nixpkgs,
     flake-utils,
+    noogle-cli,
     ...
   }:
     (flake-utils.lib.eachDefaultSystem (
@@ -74,10 +79,10 @@
       }
     )) // {
       nixosModules = {
-        nixpkgs-sh = (import ./nixpkgs-sh.nix "nixos");
+        nixpkgs-sh = (import ./nixpkgs-sh.nix "nixos" noogle-cli);
       };
       homeManagerModules = {
-        nixpkgs-sh = (import ./nixpkgs-sh.nix "home-manager");
+        nixpkgs-sh = (import ./nixpkgs-sh.nix "home-manager" noogle-cli);
       };
     };
 }
