@@ -12,7 +12,7 @@
     flake-utils,
     ...
   }:
-    flake-utils.lib.eachDefaultSystem (
+    (flake-utils.lib.eachDefaultSystem (
       system: let
         pkgs = nixpkgs.legacyPackages.${system};
 
@@ -72,5 +72,12 @@
           };
         };
       }
-    );
+    )) // {
+      nixosModules = {
+        nixpkgs-sh = (import ./nixpkgs-sh.nix "nixos");
+      };
+      homeManagerModules = {
+        nixpkgs-sh = (import ./nixpkgs-sh.nix "home-manager");
+      };
+    };
 }
