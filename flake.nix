@@ -20,7 +20,7 @@
 
         mkScript = name: text: pkgs.writeShellScriptBin name text;
         scripts = [
-          (mkScript "build" "go build -o $DEV_DIR/bin $CMD_DIR")
+          (mkScript "build" "go build -o $DEV_DIR/bin/ $CMD_DIR")
           (mkScript "run" "$DEV_DIR/bin/nix-search-tv $@ --config $DEV_DIR/config.json")
           (mkScript "print-search" "run print")
           (mkScript "preview-search" "run preview $@")
@@ -33,8 +33,7 @@
       in {
         devShells.default = pkgs.mkShell {
           packages = with pkgs; [
-            go_1_23
-            gopls
+            go_1_25
             brotli
             television
             fzf
@@ -50,7 +49,7 @@
           '';
         };
 
-        packages.default = pkgs.buildGo123Module {
+        packages.default = pkgs.buildGo125Module {
           pname = "nix-search-tv";
           version = self.rev or "unknown";
           src = self;
@@ -63,6 +62,8 @@
           vendorHash = "sha256-ZuhU1+XzJeiGheYNR4lL7AI5vgWvgp6iuJjMcK8t6Mg=";
 
           subPackages = [cmdPkg];
+
+          env.GOEXPERIMENT = "jsonv2";
 
           meta = {
             description = "A tool integrating television and nix-search packages";
