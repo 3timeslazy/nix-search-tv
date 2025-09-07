@@ -20,7 +20,7 @@
 
         mkScript = name: text: pkgs.writeShellScriptBin name text;
         scripts = [
-          (mkScript "build" "go build -o $DEV_DIR/bin/ $CMD_DIR")
+          (mkScript "build" "GOEXPERIMENT=jsonv2 go build -o $DEV_DIR/bin/ $CMD_DIR")
           (mkScript "run" "$DEV_DIR/bin/nix-search-tv $@ --config $DEV_DIR/config.json")
           (mkScript "print-search" "run print")
           (mkScript "preview-search" "run preview $@")

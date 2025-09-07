@@ -1,16 +1,21 @@
 package indexer
 
 import (
+	"bytes"
+	_ "embed"
 	"encoding/json"
 	"fmt"
 	"io"
 	"strconv"
 
 	"github.com/dgraph-io/badger/v4"
+	"github.com/valyala/gozstd"
 )
 
 type Badger struct {
 	badger *badger.DB
+	ddict  *gozstd.DDict
+	cdict  *gozstd.CDict
 }
 
 type BadgerConfig struct {
@@ -30,6 +35,9 @@ func NewBadger(conf BadgerConfig) (*Badger, error) {
 
 	return &Badger{
 		badger: db,
+
+		cdict: cdict,
+		ddict: ddict,
 	}, nil
 }
 
@@ -75,13 +83,18 @@ func (indexer *Badger) Index(data io.Reader, indexedKeys io.Writer) error {
 		return fmt.Errorf("drop all: %w", err)
 	}
 
+	buf := []byte{}
 	batch := indexer.badger.NewWriteBatch()
 	for name, pkg := range pkgs.Packages {
 		nameb := []byte(name)
-		err = batch.Set(nameb, injectKey(name, pkg))
+
+		buf = gozstd.CompressDict(buf, injectKey(name, pkg), indexer.cdict)
+		err = batch.Set(nameb, bytes.Clone(buf))
 		if err != nil {
-			return err
+			return fmt.Errorf("set package content: %w", err)
 		}
+		buf = buf[:0]
+
 		indexedKeys.Write(append(nameb, []byte("\n")...))
 	}
 
@@ -97,15 +110,20 @@ func (bdg *Badger) Load(pkgName string) (json.RawMessage, error) {
 			return err
 		}
 
-		pkg, err = item.ValueCopy(pkg)
+		comp, err := item.ValueCopy(nil)
 		if err != nil {
 			return err
+		}
+
+		pkg, err = gozstd.DecompressDict(pkg, comp, bdg.ddict)
+		if err != nil {
+			return fmt.Errorf("decompress content: %w", err)
 		}
 
 		return nil
 	})
 	if err != nil {
-		return nil, fmt.Errorf("iter failed: %w", err)
+		return nil, fmt.Errorf("get package: %w", err)
 	}
 
 	return pkg, nil
