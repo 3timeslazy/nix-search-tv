@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"strconv"
 	"strings"
 
 	"github.com/3timeslazy/nix-search-tv/indexer"
@@ -67,6 +68,14 @@ func NewPreviewAction(preview PreviewFunc) cli.ActionFunc {
 			return fmt.Errorf("load package content: %w", err)
 		}
 
+		pkg = injectKey(pkgName, pkg)
 		return preview(index, Stdout, pkg)
 	}
+}
+
+// injectKey appends the `_key` field into the json object.
+//
+// This thing saves about ~2.5s on my laptop when indexing 120k nix packages
+func injectKey(key string, pkg json.RawMessage) json.RawMessage {
+	return append([]byte(`{"_key":`+strconv.Quote(key)+`,`), pkg[1:]...)
 }

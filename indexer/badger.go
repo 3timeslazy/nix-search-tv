@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"strconv"
 
 	"github.com/3timeslazy/nix-search-tv/indexer/x/jsonstream"
 	"github.com/dgraph-io/badger/v4"
@@ -71,7 +70,7 @@ func (indexer *Badger) Index(data io.Reader, indexedKeys io.Writer) error {
 	err = jsonstream.ParsePackages(data, func(pkgName string, pkgContent []byte) error {
 		nameb := []byte(pkgName)
 
-		buf = gozstd.CompressDict(buf, injectKey(pkgName, pkgContent), indexer.cdict)
+		buf = gozstd.CompressDict(buf, pkgContent, indexer.cdict)
 		err = batch.Set(nameb, bytes.Clone(buf))
 		if err != nil {
 			return fmt.Errorf("set package content: %w", err)
@@ -119,11 +118,4 @@ func (bdg *Badger) Load(pkgName string) (json.RawMessage, error) {
 
 func (bdg *Badger) Close() error {
 	return bdg.badger.Close()
-}
-
-// injectKey appends the `_key` field into the json object.
-//
-// This thing saves about ~2.5s on my laptop when indexing 120k nix packages
-func injectKey(key string, pkg json.RawMessage) json.RawMessage {
-	return append([]byte(`{"_key":`+strconv.Quote(key)+`,`), pkg[1:]...)
 }
