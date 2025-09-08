@@ -36,7 +36,7 @@ func ParsePackages(pkgs io.Reader, cb func(pkgName string, pkgContent []byte) er
 	for {
 		//   ↓ (1)         ↓ (2)
 		// { "other": ..., "packages": { "pkg1": {...}, "pkg2": {...} } }
-		token, err := dec.Token()
+		token, err = dec.Token()
 		if err != nil {
 			return err
 		}
@@ -60,10 +60,11 @@ func ParsePackages(pkgs io.Reader, cb func(pkgName string, pkgContent []byte) er
 		return err
 	}
 
+	b := json.RawMessage{}
 	for {
 		//                               ↓ (1)          ↓ (2)
 		// { "other": ..., "packages": { "pkg1": {...}, "pkg2": {...} } }
-		token, err := dec.Token()
+		token, err = dec.Token()
 		if err != nil {
 			return err
 		}
@@ -78,7 +79,6 @@ func ParsePackages(pkgs io.Reader, cb func(pkgName string, pkgContent []byte) er
 			return fmt.Errorf("key is not a string: %v", token)
 		}
 
-		b := json.RawMessage{}
 		err = dec.Decode(&b)
 		if err != nil {
 			return fmt.Errorf("decode package definition: %w", err)
