@@ -8,6 +8,7 @@ import (
 	"io"
 	"strconv"
 
+	"github.com/3timeslazy/nix-search-tv/indexer/x/jsonstream"
 	"github.com/dgraph-io/badger/v4"
 	"github.com/valyala/gozstd"
 )
@@ -54,41 +55,23 @@ type Indexable struct {
 }
 
 func (indexer *Badger) Index(data io.Reader, indexedKeys io.Writer) error {
-	// It is possible to parse packages as a stream and
-	// show the first results quickly (basically as soon as we parsed a package)
-	//
-	// However, that doesn't work well with preview and batch writes.
-	// If we write to the stdout as we parsed a package name, then
-	// the preview command might be called before data is saved on disk, which
-	// will result in a "not found" error.
-	//
-	// We can parse packages as a stream and write every entry to the index individually,
-	// but that will result in a slower indexing overall.
-	//
-	// Given that, I'd prefer to show the first results later, but
-	// reduce the overall indexing time.
-	pkgs := Indexable{}
-	err := json.NewDecoder(data).Decode(&pkgs)
-	if err != nil {
-		return fmt.Errorf("decode json: %w", err)
-	}
-
 	// Delete previous index. If we do not do that
 	// and just re-assign the keys below, the index
 	// will be updated, however its size will increase drastically.
 	// Then, to keep the index size small, we'll need to deal with
 	// badger's garbade colletion. So, it's just easier to drop everything
-	err = indexer.badger.DropAll()
+	err := indexer.badger.DropAll()
 	if err != nil {
 		return fmt.Errorf("drop all: %w", err)
 	}
 
 	buf := []byte{}
 	batch := indexer.badger.NewWriteBatch()
-	for name, pkg := range pkgs.Packages {
-		nameb := []byte(name)
 
-		buf = gozstd.CompressDict(buf, injectKey(name, pkg), indexer.cdict)
+	err = jsonstream.ParsePackages(data, func(pkgName string, pkgContent []byte) error {
+		nameb := []byte(pkgName)
+
+		buf = gozstd.CompressDict(buf, injectKey(pkgName, pkgContent), indexer.cdict)
 		err = batch.Set(nameb, bytes.Clone(buf))
 		if err != nil {
 			return fmt.Errorf("set package content: %w", err)
@@ -96,6 +79,11 @@ func (indexer *Badger) Index(data io.Reader, indexedKeys io.Writer) error {
 		buf = buf[:0]
 
 		indexedKeys.Write(append(nameb, []byte("\n")...))
+
+		return nil
+	})
+	if err != nil {
+		return fmt.Errorf("handle packages: %w", err)
 	}
 
 	return batch.Flush()
