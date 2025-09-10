@@ -1,8 +1,7 @@
 package jsonstream
 
 import (
-	"encoding/json"
-	"errors"
+	"encoding/json/jsontext"
 	"fmt"
 	"io"
 )
@@ -19,76 +18,71 @@ import (
 //
 // It allows to not wait for the entire file to be parsed and work with
 // package descriptions in the stream manner.
-func ParsePackages(pkgs io.Reader, cb func(pkgName string, pkgContent []byte) error) error {
-	dec := json.NewDecoder(pkgs)
+func ParsePackages(pkgs io.Reader, cb func(name string, content []byte) error) error {
+	dec := jsontext.NewDecoder(pkgs)
 
 	// We're here
 	// ↓
 	// { "other": ..., "packages": { "pkg1": {...}, "pkg2": {...} } }
-	token, err := dec.Token()
+	t, err := dec.ReadToken()
 	if err != nil {
-		return fmt.Errorf("get first token: %w", err)
-	}
-	if token != json.Delim('{') {
-		return errors.New("an object expected")
+		return fmt.Errorf("read opening curly bracket: %w", err)
 	}
 
 	for {
 		//   ↓ (1)         ↓ (2)
 		// { "other": ..., "packages": { "pkg1": {...}, "pkg2": {...} } }
-		token, err = dec.Token()
+		t, err = dec.ReadToken()
 		if err != nil {
-			return err
+			return fmt.Errorf("read root key: %w", err)
 		}
 
-		key, ok := token.(string)
-		if ok && key == "packages" {
+		if t.Kind() != '"' {
+			return fmt.Errorf("expected root key as string, but got %s", t.Kind())
+		}
+		if t.String() == "packages" {
 			break
 		}
 
-		s := json.RawMessage{}
-		err = dec.Decode(&s)
-		if err != nil {
-			return err
-		}
+		dec.SkipValue()
 	}
 
 	//                             ↓ consume the opening '{'
 	// { "other": ..., "packages": { "pkg1": {...}, "pkg2": {...} } }
-	token, err = dec.Token()
+	t, err = dec.ReadToken()
 	if err != nil {
-		return err
+		return fmt.Errorf("read opening bracket for 'packages': %w", err)
 	}
 
-	b := json.RawMessage{}
+	var name string
+	var content []byte
+
 	for {
 		//                               ↓ (1)          ↓ (2)
 		// { "other": ..., "packages": { "pkg1": {...}, "pkg2": {...} } }
-		token, err = dec.Token()
+		t, err = dec.ReadToken()
 		if err != nil {
-			return err
-		}
-		//                                                            ↓
-		// { "other": ..., "packages": { "pkg1": {...}, "pkg2": {...} } }
-		if token == json.Delim('}') {
-			break
+			return fmt.Errorf("read package name: %w", err)
 		}
 
-		key, ok := token.(string)
-		if !ok {
-			return fmt.Errorf("key is not a string: %v", token)
+		switch t.Kind() {
+		case '"':
+			name = t.String()
+		case '}':
+			//                                                            ↓
+			// { "other": ..., "packages": { "pkg1": {...}, "pkg2": {...} } }
+			return nil
+		default:
+			return fmt.Errorf("expected package name as string, but got %s", t.Kind())
 		}
 
-		err = dec.Decode(&b)
+		content, err = dec.ReadValue()
 		if err != nil {
-			return fmt.Errorf("decode package definition: %w", err)
+			return fmt.Errorf("read package content: %w", err)
 		}
 
-		err = cb(key, b)
-		if err != nil {
+		if err = cb(name, content); err != nil {
 			return fmt.Errorf("callback failed: %w", err)
 		}
 	}
-
-	return nil
 }
