@@ -87,14 +87,20 @@ func runIndex(
 	}
 	defer cache.Close()
 
-	badgerDir := filepath.Join(indexDir, "badger")
-	indexer, err := NewBadger(BadgerConfig{
-		Dir: badgerDir,
-	})
+	smallDir := filepath.Join(indexDir, "small")
+	indexer, err := NewSimple(smallDir)
 	if err != nil {
 		return fmt.Errorf("open indexer: %w", err)
 	}
-	defer indexer.Close()
+
+	// badgerDir := filepath.Join(indexDir, "badger")
+	// indexer, err := NewBadger(BadgerConfig{
+	// 	Dir: badgerDir,
+	// })
+	// if err != nil {
+	// 	return fmt.Errorf("open indexer: %w", err)
+	// }
+	// defer indexer.Close()
 
 	err = indexer.Index(pkgs, cache)
 	if err != nil {
@@ -149,14 +155,20 @@ func OpenKeysReader(cacheDir, index string) (io.ReadCloser, error) {
 }
 
 func LoadKey(cacheDir, index, key string) (json.RawMessage, error) {
-	badgerDir := filepath.Join(cacheDir, index, "badger")
-	indexer, err := NewBadger(BadgerConfig{
-		Dir: badgerDir,
-	})
+	smallDir := filepath.Join(cacheDir, index, "small")
+	indexer, err := NewSimple(smallDir)
 	if err != nil {
 		return nil, fmt.Errorf("open indexer: %w", err)
 	}
-	defer indexer.Close()
+
+	// badgerDir := filepath.Join(cacheDir, index, "badger")
+	// indexer, err := NewBadger(BadgerConfig{
+	// 	Dir: badgerDir,
+	// })
+	// if err != nil {
+	// 	return nil, fmt.Errorf("open indexer: %w", err)
+	// }
+	// defer indexer.Close()
 
 	data, err := indexer.Load(key)
 	if err != nil {

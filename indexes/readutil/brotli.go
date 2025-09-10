@@ -25,3 +25,8 @@ func (br *brotliReadCloser) Close() error {
 func (br *brotliReadCloser) Read(p []byte) (n int, err error) {
 	return br.brd.Read(p)
 }
+
+// Reset resets the internal brotli reader. Used for testing only.
+func (br *brotliReadCloser) Reset(rd io.Reader) {
+	br.brd.Reset(rd)
+}
