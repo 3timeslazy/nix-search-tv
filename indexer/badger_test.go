@@ -34,6 +34,12 @@ func TestSimpleSetGet(t *testing.T) {
 	})
 }
 
+func TestSQLiteSetGet(t *testing.T) {
+	testSetGet(t, func(dir string) (Indexer, error) {
+		return NewSQLite(dir)
+	})
+}
+
 func testSetGet(t *testing.T, newIndexer func(dir string) (Indexer, error)) {
 	t.Parallel()
 

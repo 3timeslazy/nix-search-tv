@@ -46,6 +46,7 @@ require (
 	github.com/golang/groupcache v0.0.0-20241129210726-2c02b8208cf8 // indirect
 	github.com/google/flatbuffers v25.2.10+incompatible // indirect
 	github.com/klauspost/compress v1.18.0 // indirect
+	github.com/mattn/go-sqlite3 v1.14.32
 	github.com/valyala/gozstd v1.23.2
 	golang.org/x/net v0.43.0
 	golang.org/x/sys v0.35.0 // indirect
