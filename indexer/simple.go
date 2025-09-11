@@ -10,7 +10,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/3timeslazy/nix-search-tv/indexer/x/jsonstream"
+	"github.com/3timeslazy/nix-search-tv/indexer/jsonstream"
 	"github.com/3timeslazy/nix-search-tv/indexer/zstd"
 )
 
