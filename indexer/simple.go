@@ -11,15 +11,12 @@ import (
 	"path/filepath"
 
 	"github.com/3timeslazy/nix-search-tv/indexer/x/jsonstream"
-	"github.com/valyala/gozstd"
+	"github.com/3timeslazy/nix-search-tv/indexer/zstd"
 )
 
 type Simple struct {
 	indexPath string
 	dataPath  string
-
-	cdict *gozstd.CDict
-	ddict *gozstd.DDict
 }
 
 func NewSimple(dir string) (*Simple, error) {
@@ -33,8 +30,6 @@ func NewSimple(dir string) (*Simple, error) {
 	return &Simple{
 		indexPath: indexPath,
 		dataPath:  dataPath,
-		cdict:     cdict,
-		ddict:     ddict,
 	}, nil
 }
 
@@ -56,7 +51,7 @@ func (indexer *Simple) Index(pkgs io.Reader, indexedKeys io.Writer) error {
 	err := jsonstream.ParsePackages(pkgs, func(name string, content []byte) error {
 		nameb = []byte(name)
 
-		compPkg = gozstd.CompressDict(compPkg, content, indexer.cdict)
+		compPkg = zstd.Compress(compPkg, content)
 		l := len(compPkg)
 
 		if offset >= len(data) {
@@ -152,7 +147,7 @@ func (indexer *Simple) Load(pkgName string) (json.RawMessage, error) {
 		return nil, fmt.Errorf("read package content: %w", err)
 	}
 
-	pkg, err := gozstd.DecompressDict(nil, compPkg, indexer.ddict)
+	pkg, err := zstd.Decompress(nil, compPkg)
 	if err != nil {
 		return nil, fmt.Errorf("decompress content: %w", err)
 	}

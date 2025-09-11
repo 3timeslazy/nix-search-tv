@@ -29,6 +29,13 @@
 
           (mkScript "build-n-tv" "build && print-search | tv --preview-command 'preview-search {}'")
           (mkScript "build-n-fzf" "build && print-search | fzf --wrap --preview 'preview-search {}' --preview-window=wrap --scheme=history")
+
+          (mkScript "train-zstd-dict" ''
+            cat ./indexer/testdata/packages.json.br | brotli -d > pkgs.json
+            zstd --train -B2048 --maxdict=112640 pkgs.json
+            mv dictionary ./indexer/zstd/zstd.dict
+            rm pkgs.json
+          '')
         ];
       in {
         devShells.default = pkgs.mkShell {
@@ -36,6 +43,7 @@
             go_1_25
             brotli
             television
+            zstd
             fzf
             tmux
           ];
