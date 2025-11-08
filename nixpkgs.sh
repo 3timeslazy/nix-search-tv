@@ -103,7 +103,7 @@ SEARCH_SNIPPET_CMD="$SEARCH_SNIPPET_CMD | tr -d \"\'\" "
 SEARCH_SNIPPET_CMD="$SEARCH_SNIPPET_CMD | awk \'{ if (\$2) { print \$2 } else print \$1 }\' "
 SEARCH_SNIPPET_CMD="$SEARCH_SNIPPET_CMD | xargs printf \"https://github.com/search?type=code&q=lang:nix+%s\" \$1 "
 
-NIX_SHELL_CMD='nix-shell --run $SHELL -p $(echo "{}" | sed "s:nixpkgs/::g"'
+NIX_SHELL_CMD="nix-shell --run \$SHELL -p \$(echo \"{}\" | sed \"s:nixpkgs/::g\""
 NIX_SHELL_CMD="$NIX_SHELL_CMD | tr -d \"\'\")"
 
 PREVIEW_WINDOW="wrap"
