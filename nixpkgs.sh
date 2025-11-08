@@ -1,8 +1,15 @@
 #!/usr/bin/env bash
 
-# In case the system uses a non-POSIX shell, like fish or nushell,
-# we want to ensure run also our forked processes in a bash environment.
-SHELL="bash"
+case "$(basename "$SHELL")" in
+bash | zsh | sh)
+    # Keep the current shell
+    ;;
+*)
+    # In case the system uses a non-POSIX shell, like fish or nushell,
+    # we want to ensure run also our forked processes in a bash environment.
+    SHELL="bash"
+    ;;
+esac
 
 # === Change keybinds or add more here ===
 
