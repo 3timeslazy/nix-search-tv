@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# shellcheck disable=SC2016
+
 case "$(basename "$SHELL")" in
 bash | zsh | sh)
     # Keep the current shell
