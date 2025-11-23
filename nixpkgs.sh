@@ -115,8 +115,13 @@ SEARCH_SNIPPET_CMD="$SEARCH_SNIPPET_CMD | xargs printf \"https://github.com/sear
 NIX_SHELL_CMD='nix-shell --run $SHELL -p $(echo "{}" | sed "s:nixpkgs/::g"'
 NIX_SHELL_CMD="$NIX_SHELL_CMD | tr -d \"\'\")"
 
-PREVIEW_WINDOW="wrap"
-[ "$(tput cols)" -lt 90 ] && PREVIEW_WINDOW="$PREVIEW_WINDOW,up"
+PREVIEW_WINDOW='
+    if [[ ${FZF_COLS:-$COLUMNS} -lt 130 ]]; then
+        echo "+change-preview-window(wrap,up)"
+    else
+        echo "+change-preview-window(wrap)"
+    fi
+'
 
 eval "$CMD print | fzf \
     --preview '$CMD preview \$(cat $STATE_FILE) {}' \
@@ -127,7 +132,7 @@ eval "$CMD print | fzf \
     --bind $'$PRINT_PREVIEW_KEY:become($CMD preview \$(cat $STATE_FILE) {})' \
     --layout reverse \
     --scheme history \
-    --preview-window='$PREVIEW_WINDOW' \
+    --bind 'resize,start:transform:$PREVIEW_WINDOW' \
     --header '$HEADER' \
     --header-first \
     --header-border \
