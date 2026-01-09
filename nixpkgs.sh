@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-# shellcheck disable=SC2016
-
 case "$(basename "$SHELL")" in
 bash | zsh | sh)
     # Keep the current shell
@@ -112,9 +110,11 @@ SEARCH_SNIPPET_CMD="$SEARCH_SNIPPET_CMD | tr -d \"\'\" "
 SEARCH_SNIPPET_CMD="$SEARCH_SNIPPET_CMD | awk \'{ if (\$2) { print \$2 } else print \$1 }\' "
 SEARCH_SNIPPET_CMD="$SEARCH_SNIPPET_CMD | xargs printf \"https://github.com/search?type=code&q=lang:nix+%s\" \$1 "
 
+# shellcheck disable=SC2016
 NIX_SHELL_CMD='nix-shell --run $SHELL -p $(echo "{}" | sed "s:nixpkgs/::g"'
 NIX_SHELL_CMD="$NIX_SHELL_CMD | tr -d \"\'\")"
 
+# shellcheck disable=SC2016
 PREVIEW_WINDOW='
     if [[ ${FZF_COLS:-$COLUMNS} -lt 130 ]]; then
         echo "+change-preview-window(wrap,up)"
