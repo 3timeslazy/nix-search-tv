@@ -1,6 +1,7 @@
 package style
 
 import (
+	"os"
 	"strings"
 )
 
@@ -12,6 +13,12 @@ const (
 
 	defaultANSIEscapeColor = "\x1b[31m" // FgRed
 )
+
+var noColor bool
+
+func init() {
+	noColor = os.Getenv("NO_COLOR") != ""
+}
 
 func (s TextStyler) Strikethrough(text string) string {
 	return s.styleTextBlock(text, "\x1b[9m", "\x1b[29m")
@@ -38,7 +45,7 @@ func (s TextStyler) Red(text string) string {
 }
 
 func (s TextStyler) style(text, prefix, suffix string) string {
-	if s&1 == 0 {
+	if s&1 == 0 || noColor {
 		return text
 	}
 	if s&dontEndStyle != 0 {
@@ -48,7 +55,7 @@ func (s TextStyler) style(text, prefix, suffix string) string {
 }
 
 func (s TextStyler) styleTextBlock(text string, prefix, suffix string) string {
-	if s&1 == 0 {
+	if s&1 == 0 || noColor {
 		return text
 	}
 	if s&dontEndStyle != 0 {
