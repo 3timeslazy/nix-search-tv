@@ -68,7 +68,7 @@ func Wrap(text string) string {
 
 func StyleHTML(text string) string {
 	md := renderdocs.RenderHTML(text)
-	return StyleLongDescription(StyledText, md)
+	return StyleLongDescription(TextStyle, md)
 }
 
 func StyleLongDescription(styler TextStyler, text string) string {
@@ -139,10 +139,10 @@ func styleCallouts(text string) string {
 		lines := strings.Split(str, "\n")
 		typ := reCalloutType.FindStringSubmatch(lines[0])[1]
 
-		prefix := StyledText.Bold("| ")
+		prefix := TextStyle.Bold("| ")
 		switch typ {
 		case "warning", "important", "caution":
-			prefix = StyledText.Red("> ")
+			prefix = TextStyle.Red("> ")
 		}
 
 		lines[0], lines[len(lines)-1] = "", ""

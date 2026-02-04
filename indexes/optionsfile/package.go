@@ -20,7 +20,7 @@ type Package struct {
 }
 
 func (pkg *Package) Preview(out io.Writer) {
-	styler := style.StyledText
+	styler := style.TextStyle
 
 	pkgTitle := textutil.PkgName(pkg.Name) + "\n"
 	fmt.Fprint(out, pkgTitle)

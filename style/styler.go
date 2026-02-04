@@ -7,17 +7,21 @@ import (
 
 type TextStyler uint8
 
+var TextStyle = detectStyle()
+
 const (
-	StyledText TextStyler = 1 << iota
+	noColor = iota
+	colored
 	dontEndStyle
 
 	defaultANSIEscapeColor = "\x1b[31m" // FgRed
 )
 
-var noColor bool
-
-func init() {
-	noColor = os.Getenv("NO_COLOR") != ""
+func detectStyle() TextStyler {
+	if os.Getenv("NO_COLOR") != "" {
+		return noColor
+	}
+	return colored
 }
 
 func (s TextStyler) Strikethrough(text string) string {
@@ -45,7 +49,7 @@ func (s TextStyler) Red(text string) string {
 }
 
 func (s TextStyler) style(text, prefix, suffix string) string {
-	if s&1 == 0 || noColor {
+	if s&1 == 0 {
 		return text
 	}
 	if s&dontEndStyle != 0 {
@@ -55,7 +59,7 @@ func (s TextStyler) style(text, prefix, suffix string) string {
 }
 
 func (s TextStyler) styleTextBlock(text string, prefix, suffix string) string {
-	if s&1 == 0 || noColor {
+	if s&1 == 0 {
 		return text
 	}
 	if s&dontEndStyle != 0 {

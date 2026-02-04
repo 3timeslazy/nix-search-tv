@@ -9,7 +9,7 @@ import (
 )
 
 func Preview(out io.Writer, pkg Package) {
-	styler := style.StyledText
+	styler := style.TextStyle
 
 	pkgTitle := textutil.PkgName(pkg.Name) + "\n"
 	fmt.Fprint(out, pkgTitle)

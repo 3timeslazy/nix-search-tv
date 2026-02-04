@@ -12,7 +12,7 @@ import (
 )
 
 func (pkg *Package) Preview(out io.Writer) {
-	styler := style.StyledText
+	styler := style.TextStyle
 
 	pkgTitle := textutil.PkgName(pkg.Name) + " " + styler.Dim("("+pkg.GetVersion()+")")
 	if pkg.Meta.Broken {

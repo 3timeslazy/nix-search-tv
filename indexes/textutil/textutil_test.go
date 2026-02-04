@@ -8,7 +8,7 @@ import (
 )
 
 func TestPkgName(t *testing.T) {
-	styler := style.StyledText
+	styler := style.TextStyle
 
 	cases := []struct {
 		PkgName  string

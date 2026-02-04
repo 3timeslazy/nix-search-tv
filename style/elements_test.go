@@ -8,7 +8,7 @@ import (
 	"github.com/alecthomas/assert/v2"
 )
 
-var s = StyledText
+var s = TextStyle
 
 const dimStart = "\x1b[2m"
 

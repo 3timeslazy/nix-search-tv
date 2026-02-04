@@ -8,7 +8,7 @@ import (
 	"github.com/3timeslazy/nix-search-tv/style"
 )
 
-var s = style.StyledText
+var s = style.TextStyle
 
 func PkgName(pkg string) string {
 	if pkg == "" {
@@ -25,7 +25,7 @@ func PkgName(pkg string) string {
 		idx = strings.LastIndex(pkg, ".") + 1
 	}
 
-	styler := style.StyledText
+	styler := style.TextStyle
 	left := pkg[:idx]
 	if left != "" {
 		left = styler.Red(pkg[:idx])
@@ -69,7 +69,7 @@ func Platforms(platforms []string) string {
 			continue
 		}
 		if printable != cp {
-			printable = style.StyledText.Dim(printable)
+			printable = style.TextStyle.Dim(printable)
 		}
 		toPrint = append(toPrint, printable)
 	}
