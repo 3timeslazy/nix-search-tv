@@ -20,7 +20,10 @@ var Preview = &cli.Command{
 	UsageText: "nix-search-tv preview [package_name]",
 	Usage:     "Print package preview",
 	Action:    NewPreviewAction(indices.Preview),
-	Flags:     BaseFlags(),
+	Flags: append(BaseFlags(), &cli.BoolFlag{
+		Name:  JsonFlag,
+		Usage: "output raw package data as JSON",
+	}),
 }
 
 type PreviewFunc func(index string, out io.Writer, pkg json.RawMessage) error
@@ -68,6 +71,11 @@ func NewPreviewAction(preview PreviewFunc) cli.ActionFunc {
 			return fmt.Errorf("load package content: %w", err)
 		}
 		pkg = injectKey(pkgName, pkg)
+
+		if cmd.IsSet(JsonFlag) {
+			_, err = Stdout.Write(append(pkg, '\n'))
+			return err
+		}
 
 		return preview(index, Stdout, pkg)
 	}
