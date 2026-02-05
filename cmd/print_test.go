@@ -395,6 +395,86 @@ func TestPrint(t *testing.T) {
 	})
 }
 
+func TestPrintOffline(t *testing.T) {
+	t.Run("single index, cache present", func(t *testing.T) {
+		state := setup(t)
+
+		writeXdgConfig(t, state, map[string]any{
+			config.EnableWaitingMessageTag: false,
+			"indexes":                      []string{indices.Nixpkgs},
+		})
+
+		// populate the cache
+		setNixpkgs("nix-search-tv")
+		printCmd(t)
+
+		// swap in a fetcher that panics on use; --offline must never reach it
+		state.Stdout.Reset()
+		indices.SetFetchers(map[string]indexer.Fetcher{
+			indices.Nixpkgs: &FailFetcher{},
+		})
+
+		printCmd(t, "--offline")
+
+		expected := []string{
+			"nix-search-tv",
+			"",
+		}
+		assert.Equal(t, expected, strings.Split(state.Stdout.String(), "\n"))
+	})
+
+	t.Run("single index, no cache", func(t *testing.T) {
+		state := setup(t)
+
+		writeXdgConfig(t, state, map[string]any{
+			config.EnableWaitingMessageTag: false,
+			"indexes":                      []string{indices.Nixpkgs},
+		})
+
+		indices.SetFetchers(map[string]indexer.Fetcher{
+			indices.Nixpkgs: &FailFetcher{},
+		})
+
+		printCmd(t, "--offline")
+
+		// cache.txt does not exist yet; initFile creates an empty one, so nothing is printed
+		assert.Equal(t, "", state.Stdout.String())
+	})
+
+	t.Run("two indexes, only one cached", func(t *testing.T) {
+		state := setup(t)
+
+		writeXdgConfig(t, state, map[string]any{
+			config.EnableWaitingMessageTag: false,
+			"indexes":                      []string{indices.Nixpkgs, indices.HomeManager},
+		})
+
+		// index only nixpkgs
+		indices.SetFetchers(map[string]indexer.Fetcher{
+			indices.Nixpkgs:     &PkgsFetcher{pkgs: []string{"nix-search-tv"}},
+			indices.HomeManager: &FailFetcher{},
+		})
+		printCmd(t, "--indexes", indices.Nixpkgs)
+
+		// both fetchers are now failing; --offline must not call either
+		state.Stdout.Reset()
+		indices.SetFetchers(map[string]indexer.Fetcher{
+			indices.Nixpkgs:     &FailFetcher{},
+			indices.HomeManager: &FailFetcher{},
+		})
+
+		printCmd(t, "--offline")
+
+		// nixpkgs prints from cache (with prefix because two indexes are configured);
+		// home-manager has no cache.txt so it contributes nothing
+		expected := []string{
+			"nixpkgs/ nix-search-tv",
+			"",
+		}
+		assert.Equal(t, expected, strings.Split(state.Stdout.String(), "\n"))
+	})
+}
+
 func TestParseHTML(t *testing.T) {
 	htmlPage := readTestdata(t, "nvf.html")
 	srv := httptest.NewServer(http.HandlerFunc(func(wr http.ResponseWriter, req *http.Request) {
@@ -595,7 +675,10 @@ func TestOptionsFile(t *testing.T) {
 func printCmd(t *testing.T, args ...string) {
 	cmd := cli.Command{
 		Writer: io.Discard,
-		Flags:  BaseFlags(),
+		Flags: append(BaseFlags(), &cli.BoolFlag{
+			Name:  OfflineFlag,
+			Usage: "disable fetching new indexes",
+		}),
 		Action: PrintAction,
 	}
 	err := cmd.Run(context.TODO(), append([]string{"print"}, args...))

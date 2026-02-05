@@ -13,12 +13,17 @@ import (
 	"github.com/urfave/cli/v3"
 )
 
+const OfflineFlag = "offline"
+
 var Print = &cli.Command{
 	Name:      "print",
 	UsageText: "nix-search-tv print",
 	Usage:     "Print indexed package names. If there is no indexed packages, they'll get indexed first",
 	Action:    PrintAction,
-	Flags:     BaseFlags(),
+	Flags: append(BaseFlags(), &cli.BoolFlag{
+		Name:  OfflineFlag,
+		Usage: "disable fetching new indexes",
+	}),
 }
 
 func PrintAction(ctx context.Context, cmd *cli.Command) error {
@@ -60,6 +65,10 @@ func PrintAction(ctx context.Context, cmd *cli.Command) error {
 	)
 	if err != nil {
 		return fmt.Errorf("check if indexing needed: %w", err)
+	}
+
+	if cmd.IsSet(OfflineFlag) {
+		needIndexing = nil
 	}
 
 	if len(needIndexing) > 0 {
