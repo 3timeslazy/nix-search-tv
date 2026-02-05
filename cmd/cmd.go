@@ -41,6 +41,7 @@ const (
 	ConfigFlag   = "config"
 	IndexesFlag  = "indexes"
 	CacheDirFlag = "cache-dir"
+	JsonFlag     = "json"
 )
 
 var Stdout io.ReadWriter = os.Stdout
