@@ -21,6 +21,7 @@ var root = &cli.Command{
 		cmd.Preview,
 		cmd.Source,
 		cmd.Homepage,
+		cmd.Install,
 	},
 }
 

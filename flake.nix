@@ -24,6 +24,7 @@
           (mkScript "run" "$DEV_DIR/bin/nix-search-tv $@ --config $DEV_DIR/config.json")
           (mkScript "print-search" "run print")
           (mkScript "preview-search" "run preview $@")
+          (mkScript "install-pkg" "run install $@")
 
           (mkScript "test-integrations" "build && GOEXPERIMENT=jsonv2 NIX_SEARCH_TV_BIN=$DEV_DIR/bin/nix-search-tv go test --count 1 -v ./tests/...")
 
