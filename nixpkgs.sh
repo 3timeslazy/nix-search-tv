@@ -129,7 +129,7 @@ eval "$CMD print | fzf \
     --bind '$OPEN_HOMEPAGE_KEY:execute($CMD homepage \$(cat $STATE_FILE) {} | xargs $OPENER)' \
     --bind $'$SEARCH_SNIPPET_KEY:execute($SEARCH_SNIPPET_CMD | xargs $OPENER)' \
     --bind $'$NIX_SHELL_KEY:become($NIX_SHELL_CMD)' \
-    --bind $'$PRINT_PREVIEW_KEY:become($CMD preview \$(cat $STATE_FILE) {})' \
+    --bind $'$PRINT_PREVIEW_KEY:execute($CMD preview \$(cat $STATE_FILE) {} | less)' \
     --layout reverse \
     --scheme history \
     --bind 'resize,start:transform:$PREVIEW_WINDOW' \
