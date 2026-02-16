@@ -47,6 +47,7 @@
             export PROJECT_ROOT=$(git rev-parse --show-toplevel)
             export DEV_DIR="$PROJECT_ROOT/.dev"
             export CMD_DIR="$PROJECT_ROOT/${cmdPkg}"
+            export GOEXPERIMENT=jsonv2
           '';
         };
 
