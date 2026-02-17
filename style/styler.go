@@ -17,8 +17,12 @@ const (
 	defaultANSIEscapeColor = "\x1b[31m" // FgRed
 )
 
+func NoColor() bool {
+	return os.Getenv("NO_COLOR") != ""
+}
+
 func detectStyle() TextStyler {
-	if os.Getenv("NO_COLOR") != "" {
+	if NoColor() {
 		return noColor
 	}
 	return colored
@@ -34,6 +38,10 @@ func (s TextStyler) Dim(text string) string {
 
 func (s TextStyler) Bold(text string) string {
 	return s.styleTextBlock(text, "\x1b[1m", "\x1b[22m")
+}
+
+func (s TextStyler) Grey(text string) string {
+	return s.styleTextBlock(text, "\x1b[38;5;8m", "\x1b[0m")
 }
 
 func (s TextStyler) Underline(text string) string {

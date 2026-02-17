@@ -16,6 +16,7 @@ import (
 	"github.com/3timeslazy/nix-search-tv/indexes/homemanager"
 	"github.com/3timeslazy/nix-search-tv/indexes/nixos"
 	"github.com/3timeslazy/nix-search-tv/indexes/nixpkgs"
+	"github.com/3timeslazy/nix-search-tv/indexes/noogle"
 	"github.com/3timeslazy/nix-search-tv/indexes/nur"
 )
 
@@ -31,6 +32,7 @@ const (
 	Nur         = "nur"
 	NixOS       = "nixos"
 	Darwin      = "darwin"
+	Noogle      = "noogle"
 )
 
 var BuiltinIndexes = map[string]bool{
@@ -39,6 +41,7 @@ var BuiltinIndexes = map[string]bool{
 	Nur:         true,
 	NixOS:       true,
 	Darwin:      true,
+	Noogle:      true,
 }
 
 var newPkgs = map[string]func() Pkg{
@@ -47,6 +50,7 @@ var newPkgs = map[string]func() Pkg{
 	Nur:         func() Pkg { return &nur.Package{} },
 	NixOS:       func() Pkg { return &nixos.Package{} },
 	Darwin:      func() Pkg { return &darwin.Package{} },
+	Noogle:      func() Pkg { return &noogle.Package{} },
 }
 
 var fetchers = map[string]indexer.Fetcher{
@@ -55,6 +59,7 @@ var fetchers = map[string]indexer.Fetcher{
 	Nur:         &nur.Fetcher{},
 	NixOS:       &nixos.Fetcher{},
 	Darwin:      &darwin.Fetcher{},
+	Noogle:      &noogle.Fetcher{},
 }
 
 func Register(

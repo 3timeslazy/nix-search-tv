@@ -29,7 +29,7 @@ var (
 	reInlineCodeType = regexp.MustCompile(`(?m)({\w+})\x60`)
 )
 
-func maxTextWidth() int {
+func MaxTextWidth() int {
 	if c := os.Getenv("FZF_PREVIEW_COLUMNS"); c != "" {
 		textWidth, _ := strconv.Atoi(c)
 		return textWidth
@@ -52,7 +52,7 @@ func maxTextWidth() int {
 }
 
 func Wrap(text string) string {
-	width := maxTextWidth()
+	width := MaxTextWidth()
 
 	if width < 0 {
 		return text
