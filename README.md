@@ -15,6 +15,72 @@ Fuzzy search for NixOS packages.
     </a>
 </div>
 
+## Searchable Things
+
+Out of the box, it is possible to search for things from:
+
+- [Nixpkgs](https://search.nixos.org/packages?channel=unstable)
+- [Home Manager](https://github.com/nix-community/home-manager)
+- [NixOS](https://search.nixos.org/options)
+- [Noogle](https://noogle.dev/)
+- [Darwin](https://github.com/LnL7/nix-darwin)
+- [NUR](https://github.com/nix-community/NUR)
+
+Also, you can search for arbitrary modules options and/or web pages. See [Custom Search](#custom-search)
+
+## Usage
+
+`nix-search-tv` does not do the search by itself, but rather integrates
+with other general purpose fuzzy finders, such as [television](https://github.com/alexpasmantier/television) and [fzf](https://github.com/junegunn/fzf). This way, you can use it by piping results into fzf, embed into NeoVim, Emacs or anything else. Some examples [here](#examples)
+
+### Television
+
+Add `nix.toml` file to your television cables directory with the content below:
+
+```toml
+[metadata]
+name = "nix"
+requirements = ["nix-search-tv"]
+
+[source]
+command = "nix-search-tv print"
+
+[preview]
+command = "nix-search-tv preview {}"
+```
+
+or use the Home Manager option:
+
+```nix
+programs.nix-search-tv.enableTelevisionIntegration = true;
+```
+
+### fzf
+
+The most straightforward integration might look like:
+
+```sh
+alias ns="nix-search-tv print | fzf --preview 'nix-search-tv preview {}' --scheme history"
+```
+
+There is also a [nixpkgs.sh](./nixpkgs.sh) script which provides more advanced fzf integration. It is the same search but with the following shortcuts:
+
+- Search only Nixpkgs or Home Manager
+- Jump to source code or homepage
+- Pipe preview to a pager to see documentation in full screen and select text
+- Search GitHub for snippets with the selected package/option
+- And more
+
+You can install it like:
+
+```sh
+let
+  ns = pkgs.writeShellScriptBin "ns" (builtins.readFile ./path/to/nixpkgs.sh);
+in {
+  environment.systemPackages = [ ns ]
+}
+```
+
 ## Installation
 
 ### Nix Package
@@ -52,58 +118,18 @@ There are many ways how one can install a package from a flake, below is one:
 }
 ```
 
-## Usage
+### fzf + nixpkgs.sh
 
-`nix-search-tv` does not do the search by itself, but rather integrates
-with other general purpose fuzzy finders, such as [television](https://github.com/alexpasmantier/television) and [fzf](https://github.com/junegunn/fzf)
-
-### Television
-
-Add `nix.toml` file to your television cables directory with the content below:
-
-```toml
-[metadata]
-name = "nix"
-requirements = ["nix-search-tv"]
-
-[source]
-command = "nix-search-tv print"
-
-[preview]
-command = "nix-search-tv preview {}"
-```
-
-or use the Home Manager option:
+by [tonybtw.com](https://www.tonybtw.com/community/nix-search-tv/)
 
 ```nix
-programs.nix-search-tv.enableTelevisionIntegration = true;
-```
-
-### fzf
-
-The most straightforward integration might look like:
-
-```sh
-alias ns="nix-search-tv print | fzf --preview 'nix-search-tv preview {}' --scheme history"
-```
-
-> [!NOTE]
-> No matter how you use nix-search-tv with fzf, it's better to add `--scheme history`. That way, the options will be sorted, which makes the search experience better
-
-More advanced integration might be found here in [nixpkgs.sh](./nixpkgs.sh). It is the same search but with the following shortcuts:
-
-- Search only Nixpkgs or Home Manager
-- Open package code declaration or homepage
-- Search GitHub for snippets with the selected package/option
-- And more
-
-You can install it like:
-
-```sh
-let
-  ns = pkgs.writeShellScriptBin "ns" (builtins.readFile ./path/to/nixpkgs.sh);
-in {
-  environment.systemPackages = [ ns ]
+pkgs.writeShellApplication {
+  name = "ns";
+  runtimeInputs = with pkgs; [
+    fzf
+    nix-search-tv
+  ];
+  text = builtins.readFile "${pkgs.nix-search-tv.src}/nixpkgs.sh";
 }
 ```
 
@@ -118,7 +144,7 @@ By default, the configuration file is looked at `$XDG_CONFIG_HOME/nix-search-tv/
   // default:
   //   linux: [nixpkgs, "home-manager", "nur", "nixos"]
   //   darwin: [nixpkgs, "home-manager", "nur", "darwin"]
-  "indexes": ["nixpkgs", "home-manager", "nur"],
+  "indexes": ["nixpkgs", "nixos", "home-manager", "nur", "noogle"],
 
   // How often to look for updates and run
   // indexer again
@@ -149,17 +175,7 @@ By default, the configuration file is looked at `$XDG_CONFIG_HOME/nix-search-tv/
 }
 ```
 
-## Searchable package registries
-
-### Builtin
-
-- [Nixpkgs](https://search.nixos.org/packages?channel=unstable)
-- [Home Manager](https://github.com/nix-community/home-manager)
-- [NixOS](https://search.nixos.org/options)
-- [Darwin](https://github.com/LnL7/nix-darwin)
-- [NUR](https://github.com/nix-community/NUR)
-
-### Custom
+### Custom Search
 
 #### Parse HTML
 
@@ -170,13 +186,16 @@ By default, the configuration file is looked at `$XDG_CONFIG_HOME/nix-search-tv/
   "render_docs_indexes": {
     // https://github.com/nix-community/plasma-manager
     "plasma": "https://nix-community.github.io/plasma-manager/options.xhtml",
+    
+    // Home Manager is also a valid page
+    // https://nix-community.github.io/home-manager/options.xhtml
   },
 }
 ```
 
-#### Parse options.json file
+#### Build-time options.json
 
-The point of this setting is to generate the options file at nix build time and point `nix-search-tv` to them. Internally, the tool compares previous and the new path and only re-indexes it if the path has changes.
+The point of this search is to generate the options.json file at nix build time and point `nix-search-tv` to it. Internally, the tool compares previous and the new path and only re-indexes it if the path has changes.
 
 ```jsonc
 {
@@ -273,6 +292,33 @@ Here's one way to generate the options.json files for `agenix` and `nixvim` usin
       };
     };
   };
+}
+```
+
+<!--TODO: add --json option -->
+
+## Examples
+
+### Custom fzf wrapper
+
+Code and a demo here: https://github.com/3timeslazy/nix-search-tv/issues/20
+
+### Agent Skill
+
+Add nix-search-tv as an [LLM agent skill](https://github.com/0xferrous/agent-stuff/blob/1ded370267321bed7448392920401ca91c3365f6/skills/nix-search/SKILL.md)
+
+### Niri
+
+A niri shortcut to start nix-search-tv as a floating window
+
+```kdl
+Mod+N { spawn-sh "ghostty --title=nix-search-tv -e path/to/nixpkgs.sh"; }
+
+window-rule {
+    match title="nix-search-tv"
+    open-floating true
+    default-column-width { proportion 0.75; }
+    default-window-height { proportion 0.75; }
 }
 ```
 
