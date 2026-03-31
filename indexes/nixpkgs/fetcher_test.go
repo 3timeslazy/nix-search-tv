@@ -21,9 +21,7 @@ import (
 func TestFetcherOutput(t *testing.T) {
 	t.Parallel()
 
-	indexer, err := indexer.NewBadger(indexer.BadgerConfig{
-		InMemory: true,
-	})
+	indexer, err := indexer.NewSimple(t.TempDir())
 	assert.NoError(t, err)
 	defer indexer.Close()
 

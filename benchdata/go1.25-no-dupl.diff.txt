@@ -1,0 +1,21 @@
+goos: linux
+goarch: amd64
+pkg: github.com/3timeslazy/nix-search-tv/indexer
+cpu: AMD Ryzen 7 7840U w/ Radeon  780M Graphics
+                       │  badger.txt  │             simple.txt              │
+                       │    sec/op    │   sec/op     vs base                │
+IndexNixpkgs-16           820.9m ± 1%   577.3m ± 2%  -29.67% (p=0.000 n=10)
+IndexDefaultIndexes-16   1007.5m ± 4%   673.7m ± 2%  -33.13% (p=0.000 n=10)
+geomean                   909.4m        623.6m       -31.43%
+
+                       │   badger.txt   │              simple.txt              │
+                       │      B/op      │     B/op      vs base                │
+IndexNixpkgs-16          1067.81Mi ± 0%   82.11Mi ± 0%  -92.31% (p=0.000 n=10)
+IndexDefaultIndexes-16    1289.6Mi ± 0%   115.5Mi ± 0%  -91.04% (p=0.000 n=10)
+geomean                    1.146Gi        97.40Mi       -91.70%
+
+                       │  badger.txt  │             simple.txt              │
+                       │  allocs/op   │  allocs/op   vs base                │
+IndexNixpkgs-16          2621.9k ± 0%   391.3k ± 0%  -85.08% (p=0.000 n=10)
+IndexDefaultIndexes-16   3231.4k ± 0%   478.4k ± 0%  -85.20% (p=0.000 n=10)
+geomean                   2.911M        432.6k       -85.14%

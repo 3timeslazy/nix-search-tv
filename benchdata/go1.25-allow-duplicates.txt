@@ -1,0 +1,28 @@
+goos: linux
+goarch: amd64
+pkg: github.com/3timeslazy/nix-search-tv/indexer
+cpu: AMD Ryzen 7 7840U w/ Radeon  780M Graphics     
+BenchmarkIndexNixpkgs-16           	       2	 726879355 ns/op
+BenchmarkIndexNixpkgs-16           	       2	 740344095 ns/op
+BenchmarkIndexNixpkgs-16           	       2	 749434216 ns/op
+BenchmarkIndexNixpkgs-16           	       2	 757477208 ns/op
+BenchmarkIndexNixpkgs-16           	       2	 752581140 ns/op
+BenchmarkIndexNixpkgs-16           	       2	 726325508 ns/op
+BenchmarkIndexNixpkgs-16           	       2	 753974326 ns/op
+BenchmarkIndexNixpkgs-16           	       2	 753168992 ns/op
+BenchmarkIndexNixpkgs-16           	       2	 760986320 ns/op
+BenchmarkIndexNixpkgs-16           	       2	 728789362 ns/op
+BenchmarkIndexDefaultIndexes-16    	       2	 840741768 ns/op
+BenchmarkIndexDefaultIndexes-16    	       2	 845153860 ns/op
+BenchmarkIndexDefaultIndexes-16    	       2	 861111551 ns/op
+BenchmarkIndexDefaultIndexes-16    	       2	 891299215 ns/op
+BenchmarkIndexDefaultIndexes-16    	       2	 858492712 ns/op
+BenchmarkIndexDefaultIndexes-16    	       2	 871579618 ns/op
+BenchmarkIndexDefaultIndexes-16    	       2	 857710723 ns/op
+BenchmarkIndexDefaultIndexes-16    	       2	 856304608 ns/op
+BenchmarkIndexDefaultIndexes-16    	       2	 863247407 ns/op
+BenchmarkIndexDefaultIndexes-16    	       2	 853879122 ns/op
+PASS
+ok  	github.com/3timeslazy/nix-search-tv/indexer	54.071s
+PASS
+ok  	github.com/3timeslazy/nix-search-tv/indexer/jsonstream	0.002s

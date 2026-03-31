@@ -23,7 +23,7 @@ func TestFetcherOutput(t *testing.T) {
 
 	full := loadTestdata(t)
 
-	indexer, err := indexer.NewBadger(indexer.BadgerConfig{InMemory: true})
+	indexer, err := indexer.NewSimple(t.TempDir())
 	assert.NoError(t, err)
 	defer indexer.Close()
 

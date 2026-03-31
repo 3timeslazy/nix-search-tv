@@ -16,7 +16,8 @@ import (
 //	  ...
 //	}
 func ParsePackages(pkgs io.Reader, cb func(name string, content []byte) error) error {
-	dec := jsontext.NewDecoder(pkgs)
+	dec := jsontext.NewDecoder(pkgs, jsontext.AllowDuplicateNames(true))
+	// dec := jsontext.NewDecoder(pkgs)
 
 	// We're here
 	// ↓

@@ -51,17 +51,19 @@
           '';
         };
 
-        packages.default = pkgs.buildGo125Module {
+        packages.default = pkgs.buildGo126Module {
           pname = "nix-search-tv";
           version = self.rev or "unknown";
           src = self;
+
+          buildInputs = [pkgs.brotli];
 
           # If `nix shell` fails with "go: inconsistent vendoring", that's
           # likely due to outdated `vendorHash`.
           #
           # To find the new hash, uncomment below:
           # vendorHash = nixpkgs.lib.fakeHash;
-          vendorHash = "sha256-SSKDo4A8Nhvylghrw6d7CdHpZ7jObEr5V3r0Y9cH80Y=";
+          vendorHash = "sha256-omj1VbRqGJX17lrBXCwBDxsX4cjU0aTCZ6LoNkPhsSs=";
 
           subPackages = [cmdPkg];
 

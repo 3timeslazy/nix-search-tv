@@ -1,0 +1,29 @@
+goos: linux
+goarch: amd64
+pkg: github.com/3timeslazy/nix-search-tv/indexer
+cpu: AMD Ryzen 7 7840U w/ Radeon  780M Graphics
+BenchmarkIndexNixpkgs-16           	       2	 616515456 ns/op	86161504 B/op	  391320 allocs/op
+BenchmarkIndexNixpkgs-16           	       2	 615680692 ns/op	86128696 B/op	  391311 allocs/op
+BenchmarkIndexNixpkgs-16           	       2	 614991024 ns/op	86104292 B/op	  391312 allocs/op
+BenchmarkIndexNixpkgs-16           	       2	 620609050 ns/op	86101648 B/op	  391311 allocs/op
+BenchmarkIndexNixpkgs-16           	       2	 618824592 ns/op	86128816 B/op	  391312 allocs/op
+BenchmarkIndexNixpkgs-16           	       2	 614210848 ns/op	85992120 B/op	  391298 allocs/op
+BenchmarkIndexNixpkgs-16           	       2	 615284277 ns/op	86128608 B/op	  391310 allocs/op
+BenchmarkIndexNixpkgs-16           	       2	 626518066 ns/op	86101416 B/op	  391308 allocs/op
+BenchmarkIndexNixpkgs-16           	       2	 623630691 ns/op	86155880 B/op	  391311 allocs/op
+BenchmarkIndexNixpkgs-16           	       2	 620044055 ns/op	86128712 B/op	  391311 allocs/op
+BenchmarkIndexDefaultIndexes-16    	       2	 729149086 ns/op	121174856 B/op	  478373 allocs/op
+BenchmarkIndexDefaultIndexes-16    	       2	 732474539 ns/op	121229448 B/op	  478377 allocs/op
+BenchmarkIndexDefaultIndexes-16    	       2	 735049810 ns/op	121202336 B/op	  478378 allocs/op
+BenchmarkIndexDefaultIndexes-16    	       2	 740642112 ns/op	121147704 B/op	  478375 allocs/op
+BenchmarkIndexDefaultIndexes-16    	       2	 737498062 ns/op	121229448 B/op	  478377 allocs/op
+BenchmarkIndexDefaultIndexes-16    	       2	 728883952 ns/op	121175048 B/op	  478376 allocs/op
+BenchmarkIndexDefaultIndexes-16    	       2	 749803522 ns/op	121202208 B/op	  478378 allocs/op
+BenchmarkIndexDefaultIndexes-16    	       2	 733922352 ns/op	121174776 B/op	  478371 allocs/op
+BenchmarkIndexDefaultIndexes-16    	       2	 751935074 ns/op	121065888 B/op	  478369 allocs/op
+BenchmarkIndexDefaultIndexes-16    	       2	 772153386 ns/op	121147600 B/op	  478373 allocs/op
+PASS
+ok  	github.com/3timeslazy/nix-search-tv/indexer	45.374s
+PASS
+ok  	github.com/3timeslazy/nix-search-tv/indexer/jsonstream	0.003s
+?   	github.com/3timeslazy/nix-search-tv/indexer/zstd	[no test files]

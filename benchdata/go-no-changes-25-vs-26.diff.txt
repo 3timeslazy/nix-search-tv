@@ -1,0 +1,9 @@
+goos: linux
+goarch: amd64
+pkg: github.com/3timeslazy/nix-search-tv/indexer
+cpu: AMD Ryzen 7 7840U w/ Radeon  780M Graphics
+                       │ go1.25.txt  │             go1.26.txt             │
+                       │   sec/op    │   sec/op     vs base               │
+IndexNixpkgs-16          825.8m ± 1%   794.1m ± 2%  -3.83% (p=0.000 n=10)
+IndexDefaultIndexes-16   962.2m ± 2%   904.5m ± 1%  -6.00% (p=0.000 n=10)
+geomean                  891.4m        847.5m       -4.92%

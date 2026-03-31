@@ -11,6 +11,18 @@ import (
 	"time"
 )
 
+// Package defines fields set by the indexer during
+// indexing
+type Package struct {
+	Name string `json:"_key"`
+}
+
+// Indexable represents the internal structure of the data
+// that the indexer expects.
+type Indexable struct {
+	Packages map[string]json.RawMessage `json:"packages"`
+}
+
 type Fetcher interface {
 	GetLatestRelease(context.Context, IndexMetadata) (string, error)
 	DownloadRelease(context.Context, string) (io.ReadCloser, error)
@@ -96,14 +108,21 @@ func runIndex(
 	}
 	defer cache.Close()
 
-	badgerDir := filepath.Join(indexDir, "badger")
-	indexer, err := NewBadger(BadgerConfig{
-		Dir: badgerDir,
-	})
+	simpleDir := filepath.Join(indexDir, "simple")
+	indexer, err := NewSimple(simpleDir)
 	if err != nil {
 		return fmt.Errorf("open indexer: %w", err)
 	}
 	defer indexer.Close()
+
+	// badgerDir := filepath.Join(indexDir, "badger")
+	// indexer, err := NewBadger(BadgerConfig{
+	// 	Dir: badgerDir,
+	// })
+	// if err != nil {
+	// 	return fmt.Errorf("open indexer: %w", err)
+	// }
+	// defer indexer.Close()
 
 	err = indexer.Index(pkgs, cache)
 	if err != nil {
@@ -158,14 +177,21 @@ func OpenKeysReader(cacheDir, index string) (io.ReadCloser, error) {
 }
 
 func LoadKey(cacheDir, index, key string) (json.RawMessage, error) {
-	badgerDir := filepath.Join(cacheDir, index, "badger")
-	indexer, err := NewBadger(BadgerConfig{
-		Dir: badgerDir,
-	})
+	simpleDir := filepath.Join(cacheDir, index, "simple")
+	indexer, err := NewSimple(simpleDir)
 	if err != nil {
 		return nil, fmt.Errorf("open indexer: %w", err)
 	}
 	defer indexer.Close()
+
+	// badgerDir := filepath.Join(cacheDir, index, "badger")
+	// indexer, err := NewBadger(BadgerConfig{
+	// 	Dir: badgerDir,
+	// })
+	// if err != nil {
+	// 	return nil, fmt.Errorf("open indexer: %w", err)
+	// }
+	// defer indexer.Close()
 
 	data, err := indexer.Load(key)
 	if err != nil {
