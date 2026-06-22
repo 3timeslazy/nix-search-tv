@@ -36,7 +36,7 @@ func (pkg *Package) GetSource() string {
 	// Home Manager options might have multiple declarations, so
 	// return the link to the official documentation with all the links
 	return fmt.Sprintf(
-		"https://nix-community.github.io/home-manager/options.xhtml#opt-%s",
+		"https://nix-community.github.io/home-manager/print.html#opt-%s",
 
 		// There are packages with quotes in their names, like
 		// targets.darwin.defaults."com.apple.menuextra.battery".ShowPercent. For these,

@@ -107,7 +107,7 @@ func TestFetcher(t *testing.T) {
 func parseHTML(t *testing.T) map[string]Package {
 	fetcher := Fetcher{}
 
-	pkgs, err := fetcher.DownloadRelease(context.Background(), "file://./testdata/options.xhtml")
+	pkgs, err := fetcher.DownloadRelease(context.Background(), "file://./testdata/print.html")
 	assert.NoError(t, err)
 	defer pkgs.Close()
 
