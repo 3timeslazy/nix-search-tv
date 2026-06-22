@@ -24,6 +24,12 @@ func Parse(doc *html.Node) (map[string]Package, error) {
 	// so it's important to find the first one and perform
 	// subsequent searches from it
 	dl := htmlquery.FindOne(doc, `//dl[@class="variablelist"]`)
+	if dl == nil {
+		// The expected options document was not found (e.g. the docs URL
+		// now serves a redirect stub or a different layout). Return an
+		// error instead of dereferencing nil and panicking.
+		return nil, fmt.Errorf("no options list found: missing dl.variablelist")
+	}
 	nameNodes := htmlquery.Find(dl, `/dt`)
 	contentNodes := htmlquery.Find(dl, `/dd`)
 
