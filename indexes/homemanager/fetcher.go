@@ -11,7 +11,6 @@ import (
 
 	"github.com/3timeslazy/nix-search-tv/indexer"
 	"github.com/3timeslazy/nix-search-tv/indexes/readutil"
-	"github.com/3timeslazy/nix-search-tv/pkgs/renderdocs"
 
 	"github.com/antchfx/htmlquery"
 	"golang.org/x/net/html"
@@ -19,7 +18,11 @@ import (
 
 type Fetcher struct{}
 
-const htmlURL = "https://nix-community.github.io/home-manager/options.xhtml"
+// Home Manager publishes its options as an mdBook site. print.html is
+// the single-page rendering containing every option, parsed by
+// ParseMdBook. (The old nixos-render-docs options.xhtml is now a
+// redirect stub.)
+const htmlURL = "https://nix-community.github.io/home-manager/print.html"
 
 func (Fetcher) GetLatestRelease(ctx context.Context, md indexer.IndexMetadata) (string, error) {
 	return time.Now().String(), nil
@@ -36,12 +39,15 @@ func (Fetcher) DownloadRelease(_ context.Context, release string) (io.ReadCloser
 		doc, err = htmlquery.LoadURL(htmlURL)
 	}
 	if err != nil {
-		return nil, fmt.Errorf("download options.xhtml: %w", err)
+		return nil, fmt.Errorf("download print.html: %w", err)
 	}
 
-	htmlPkgs, err := renderdocs.Parse(doc)
+	htmlPkgs, err := ParseMdBook(doc)
 	if err != nil {
-		return nil, fmt.Errorf("parse options.xhtml: %w", err)
+		return nil, fmt.Errorf("parse print.html: %w", err)
+	}
+	if len(htmlPkgs) == 0 {
+		return nil, fmt.Errorf("parse print.html: no options found (docs layout may have changed)")
 	}
 
 	// `Package` represents how data is stored
