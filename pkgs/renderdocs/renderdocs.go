@@ -203,6 +203,50 @@ func setProp(props *Package, name, value string) {
 	}
 }
 
+// RenderValue renders an option property value node (e.g. a Default or
+// Example) from the Home Manager mdBook output to the markdown form used
+// in options.json. Text nodes are emitted verbatim (preserving
+// significant whitespace and newlines); <code> spans become `backtick`
+// code, regardless of class; and cross-reference links to other options
+// (<a href="#opt-...">) become markdown links such as
+// `[](#opt-other)`.
+//
+// It is intentionally separate from innerText (used by Parse for the
+// nixos-render-docs / nix-darwin layout, which only backticks
+// <code class="literal">) so that layout is left unchanged.
+func RenderValue(n *html.Node) string {
+	var output func(*strings.Builder, *html.Node)
+	output = func(b *strings.Builder, n *html.Node) {
+		switch n.Type {
+		case html.ElementNode:
+			switch n.Data {
+			case "code":
+				b.WriteString("`" + htmlquery.InnerText(n) + "`")
+				return
+			case "a":
+				href := htmlquery.SelectAttr(n, "href")
+				if strings.HasPrefix(href, "#opt-") {
+					b.WriteString("[" + htmlquery.InnerText(n) + "](" + href + ")")
+					return
+				}
+			}
+
+		case html.TextNode:
+			b.WriteString(n.Data)
+			return
+		case html.CommentNode:
+			return
+		}
+		for child := n.FirstChild; child != nil; child = child.NextSibling {
+			output(b, child)
+		}
+	}
+
+	var b strings.Builder
+	output(&b, n)
+	return b.String()
+}
+
 func innerText(n *html.Node) string {
 	var output func(*strings.Builder, *html.Node)
 	output = func(b *strings.Builder, n *html.Node) {
