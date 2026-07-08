@@ -1,5 +1,5 @@
 ╭─────────────── stdin ────────────────╮╭──── nixpkgs/ docbook_sgml_dtd_31 ────╮
-│>                             1 / 20  ││ docbook_sgml_dtd_31 (3.1)            ▲
+│>                              1 / 20 ││ docbook_sgml_dtd_31 (3.1)            ▲
 ╰──────────────────────────────────────╯│                                      █
 ╭────────────── Results ───────────────╮│ license (free)                       █
 │> nixpkgs/ docbook_sgml_dtd_31        ││ No License                           █
@@ -21,4 +21,4 @@
 │  home-manager/ programs.ssh.matchBl… ││                                      ║
 │  home-manager/ programs.tmux.shortc… ││                                      ▼
 ╰──────────────────────────────────────╯╰──────────────────────────────────────╯
-  CHANNEL  stdin[Hint] Remote Control: Ctrl-t • Hide Preview: Ct        v0.13.2
+  CHANNEL  stdin      Remote Control: ctrl-t • Help: ctrl-h             v0.15.2

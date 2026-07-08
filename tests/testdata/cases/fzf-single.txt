@@ -10,15 +10,15 @@
                                         │ x86_64-darwin                        │
                                         │ aarch64-darwin                       │
                                         │                                      │
-  sbclPackages.cl-glfw-opengl-apple__·· │                                      │
-  rPackages.minfiData                   │                                      │
-  rPackages.OOBCurve                    │                                      │
-  rPackages.BasicSTARRseq               │                                      │
-  python313Packages.cppe                │                                      │
-  pantheon.elementary-iconbrowser       │                                      │
-  ocamlPackages.github                  │                                      │
-  haskellPackages.wsdl                  │                                      │
-  haskellPackages.PropaFP               │                                      │
+▌ sbclPackages.cl-glfw-opengl-apple__·· │                                      │
+▌ rPackages.minfiData                   │                                      │
+▌ rPackages.OOBCurve                    │                                      │
+▌ rPackages.BasicSTARRseq               │                                      │
+▌ python313Packages.cppe                │                                      │
+▌ pantheon.elementary-iconbrowser       │                                      │
+▌ ocamlPackages.github                  │                                      │
+▌ haskellPackages.wsdl                  │                                      │
+▌ haskellPackages.PropaFP               │                                      │
 ▌ docbook_sgml_dtd_31                   │                                      │
   10/10 ─────────────────────────────── │                                      │
 >                                       ╰──────────────────────────────────────╯

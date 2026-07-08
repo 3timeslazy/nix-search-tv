@@ -1,24 +1,24 @@
                                         ╭──────────────────────────────────────╮
                                         │ docbook_sgml_dtd_31 (3.1)            │
-  home-manager/ xdg.desktopEntries.<n·· │                                      │
-  home-manager/ services.signaturepdf·· │ license (free)                       │
-  home-manager/ programs.tmux.shortcut  │ No License                           │
-  home-manager/ programs.ssh.matchBlo·· │                                      │
-  home-manager/ programs.ssh.matchBlo·· │ platforms                            │
-  home-manager/ programs.pandoc.templ·· │ x86_64-linux                         │
-  home-manager/ programs.kakoune.conf·· │ aarch64-linux                        │
-  home-manager/ programs.git.difftast·· │ x86_64-darwin                        │
-  home-manager/ programs.firefox.prof·· │ aarch64-darwin                       │
-  home-manager/ home.pointerCursor.hy·· │                                      │
-  nixpkgs/ sbclPackages.cl-glfw-openg·· │                                      │
-  nixpkgs/ rPackages.minfiData          │                                      │
-  nixpkgs/ rPackages.OOBCurve           │                                      │
-  nixpkgs/ rPackages.BasicSTARRseq      │                                      │
-  nixpkgs/ python313Packages.cppe       │                                      │
-  nixpkgs/ pantheon.elementary-iconbr·· │                                      │
-  nixpkgs/ ocamlPackages.github         │                                      │
-  nixpkgs/ haskellPackages.wsdl         │                                      │
-  nixpkgs/ haskellPackages.PropaFP      │                                      │
+▌ home-manager/ xdg.desktopEntries.<n·· │                                      │
+▌ home-manager/ services.signaturepdf·· │ license (free)                       │
+▌ home-manager/ programs.tmux.shortcut  │ No License                           │
+▌ home-manager/ programs.ssh.matchBlo·· │                                      │
+▌ home-manager/ programs.ssh.matchBlo·· │ platforms                            │
+▌ home-manager/ programs.pandoc.templ·· │ x86_64-linux                         │
+▌ home-manager/ programs.kakoune.conf·· │ aarch64-linux                        │
+▌ home-manager/ programs.git.difftast·· │ x86_64-darwin                        │
+▌ home-manager/ programs.firefox.prof·· │ aarch64-darwin                       │
+▌ home-manager/ home.pointerCursor.hy·· │                                      │
+▌ nixpkgs/ sbclPackages.cl-glfw-openg·· │                                      │
+▌ nixpkgs/ rPackages.minfiData          │                                      │
+▌ nixpkgs/ rPackages.OOBCurve           │                                      │
+▌ nixpkgs/ rPackages.BasicSTARRseq      │                                      │
+▌ nixpkgs/ python313Packages.cppe       │                                      │
+▌ nixpkgs/ pantheon.elementary-iconbr·· │                                      │
+▌ nixpkgs/ ocamlPackages.github         │                                      │
+▌ nixpkgs/ haskellPackages.wsdl         │                                      │
+▌ nixpkgs/ haskellPackages.PropaFP      │                                      │
 ▌ nixpkgs/ docbook_sgml_dtd_31          │                                      │
   20/20 ─────────────────────────────── │                                      │
 >                                       ╰──────────────────────────────────────╯
