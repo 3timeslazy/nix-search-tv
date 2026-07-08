@@ -87,17 +87,16 @@ $NIX_SHELL_KEY - nix-shell
 $PRINT_PREVIEW_KEY - print preview
 "
 
-FZF_BINDS=""
+declare -a FZF_BINDS=()
 for e in "${INDEXES[@]}"; do
-    index=$(echo "$e" | awk '{ print $1 }')
-    keybind=$(echo "$e" | awk '{ print $2 }')
+    read -r index keybind <<<"$e"
 
-    fzf_bind=$(bind_index "$keybind" "$index")
-    fzf_save_state=$(save_state "$index")
-    FZF_BINDS="$FZF_BINDS --bind '$fzf_bind+$fzf_save_state'"
+    fzf_bind="$(bind_index "$keybind" "$index")"
+    fzf_save_state="$(save_state "$index")"
 
-    newline=$'\n'
-    HEADER="$HEADER$keybind - $index$newline"
+    FZF_BINDS+=(--bind "$fzf_bind+$fzf_save_state")
+
+    HEADER+="$keybind - $index"$'\n'
 done
 
 # reset the state
@@ -107,7 +106,7 @@ SEARCH_SNIPPET_CMD=$'echo "{}"'
 # fzf surrounds the matched package with ', trim them
 SEARCH_SNIPPET_CMD="$SEARCH_SNIPPET_CMD | tr -d \"\'\" "
 # if it's multi-index search, then we need to remote the prefix
-SEARCH_SNIPPET_CMD="$SEARCH_SNIPPET_CMD | awk \'{ if (\$2) { print \$2 } else print \$1 }\' "
+SEARCH_SNIPPET_CMD="$SEARCH_SNIPPET_CMD | awk '{ if (\$2) { print \$2 } else print \$1 }' "
 SEARCH_SNIPPET_CMD="$SEARCH_SNIPPET_CMD | xargs printf \"https://github.com/search?type=code&q=lang:nix+%s\" \$1 "
 
 # shellcheck disable=SC2016
@@ -123,19 +122,18 @@ PREVIEW_WINDOW='
     fi
 '
 
-eval "$CMD print | fzf \
-    --preview '$CMD preview \$(cat $STATE_FILE) {}' \
-    --bind '$OPEN_SOURCE_KEY:execute($CMD source \$(cat $STATE_FILE) {} | xargs $OPENER)' \
-    --bind '$OPEN_HOMEPAGE_KEY:execute($CMD homepage \$(cat $STATE_FILE) {} | xargs $OPENER)' \
-    --bind $'$SEARCH_SNIPPET_KEY:execute($SEARCH_SNIPPET_CMD | xargs $OPENER)' \
-    --bind $'$NIX_SHELL_KEY:become($NIX_SHELL_CMD)' \
-    --bind $'$PRINT_PREVIEW_KEY:execute($CMD preview \$(cat $STATE_FILE) {} | less)' \
+$CMD print | fzf \
+    --preview "$CMD preview \$(cat $STATE_FILE) {}" \
+    --bind "$OPEN_SOURCE_KEY:execute($CMD source \$(cat $STATE_FILE) {} | xargs $OPENER)" \
+    --bind "$OPEN_HOMEPAGE_KEY:execute($CMD homepage \$(cat $STATE_FILE) {} | xargs $OPENER)" \
+    --bind "$SEARCH_SNIPPET_KEY:execute($SEARCH_SNIPPET_CMD | xargs $OPENER)" \
+    --bind "$NIX_SHELL_KEY:become($NIX_SHELL_CMD)" \
+    --bind "$PRINT_PREVIEW_KEY:execute($CMD preview \$(cat $STATE_FILE) {} | less)" \
     --layout reverse \
-    --scheme history \
-    --bind 'resize,start:transform:$PREVIEW_WINDOW' \
-    --header '$HEADER' \
+    --scheme path \
+    --bind "resize,start:transform:$PREVIEW_WINDOW" \
+    --header "$HEADER" \
     --header-first \
     --header-border \
-    --header-label \"Help\" \
-    $FZF_BINDS
-"
+    --header-label "Help" \
+    "${FZF_BINDS[@]}"
