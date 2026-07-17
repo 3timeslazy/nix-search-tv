@@ -10,8 +10,8 @@
                                         │ x86_64-darwin                        │
                                         │ aarch64-darwin                       │
                                         │                                      │
-▌ sbclPackages.cl-glfw-opengl-apple__·· │                                      │
-▌ rPackages.minfiData                   │                                      │
+▌ sbclPackages.cl-glfw-opengl-apple__·· │ output                               │
+▌ rPackages.minfiData                   │ out                                  │
 ▌ rPackages.OOBCurve                    │                                      │
 ▌ rPackages.BasicSTARRseq               │                                      │
 ▌ python313Packages.cppe                │                                      │

@@ -1,6 +1,7 @@
 package textutil
 
 import (
+	"maps"
 	"runtime"
 	"slices"
 	"strings"
@@ -72,6 +73,20 @@ func Platforms(platforms []string) string {
 			printable = style.TextStyle.Dim(printable)
 		}
 		toPrint = append(toPrint, printable)
+	}
+
+	return strings.Join(toPrint, "\n")
+}
+
+func Outputs(outputs map[string]any, outputName string) string {
+	toPrint := []string{outputName}
+
+	for _, output := range slices.Sorted(maps.Keys(outputs)) {
+		if output == outputName {
+			continue
+		}
+
+		toPrint = append(toPrint, style.TextStyle.Dim(output))
 	}
 
 	return strings.Join(toPrint, "\n")

@@ -65,6 +65,14 @@ func (pkg *Package) Preview(out io.Writer) {
 		)
 		fmt.Fprintln(out, platforms)
 	}
+
+	if num := len(pkg.Outputs); num > 0 {
+		outputs := textutil.Prop(
+			textutil.IfElse(num > 1, "outputs", "output"), "",
+			textutil.Outputs(pkg.Outputs, pkg.OutputName),
+		)
+		fmt.Fprintln(out, outputs)
+	}
 }
 
 func licensesString(ls []nixpkgs.License) string {
