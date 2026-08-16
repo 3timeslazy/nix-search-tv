@@ -11,8 +11,10 @@ import (
 
 type Package struct {
 	indexer.Package
-	Meta    Meta   `json:"meta"`
-	Version string `json:"version"`
+	Meta       Meta           `json:"meta"`
+	Version    string         `json:"version"`
+	Outputs    map[string]any `json:"outputs"`
+	OutputName string         `json:"outputName"`
 }
 
 type Meta struct {

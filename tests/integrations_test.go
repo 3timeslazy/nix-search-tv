@@ -154,7 +154,7 @@ func testIntegration(t *testing.T, cmdArgs CmdArgs, expected string) {
 	output, err := pane.Capture()
 	assert.NoError(t, err)
 
-	assert.Equal(t, expected, output, "Command: ", cmd.String())
+	assert.Equal(t, expected, output, "Command: %s", cmd.String())
 }
 
 func newSession(

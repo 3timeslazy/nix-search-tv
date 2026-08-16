@@ -10,8 +10,8 @@
 ▌ home-manager/ programs.git.difftast·· │ x86_64-darwin                        │
 ▌ home-manager/ programs.firefox.prof·· │ aarch64-darwin                       │
 ▌ home-manager/ home.pointerCursor.hy·· │                                      │
-▌ nixpkgs/ sbclPackages.cl-glfw-openg·· │                                      │
-▌ nixpkgs/ rPackages.minfiData          │                                      │
+▌ nixpkgs/ sbclPackages.cl-glfw-openg·· │ output                               │
+▌ nixpkgs/ rPackages.minfiData          │ out                                  │
 ▌ nixpkgs/ rPackages.OOBCurve           │                                      │
 ▌ nixpkgs/ rPackages.BasicSTARRseq      │                                      │
 ▌ nixpkgs/ python313Packages.cppe       │                                      │

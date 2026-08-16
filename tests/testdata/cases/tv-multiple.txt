@@ -10,9 +10,9 @@
 │  nixpkgs/ python313Packages.cppe     ││ x86_64-darwin                        █
 │  nixpkgs/ rPackages.BasicSTARRseq    ││ aarch64-darwin                       █
 │  nixpkgs/ rPackages.OOBCurve         ││                                      █
-│  nixpkgs/ rPackages.minfiData        ││                                      █
-│  nixpkgs/ sbclPackages.cl-glfw-open… ││                                      █
-│  home-manager/ home.pointerCursor.h… ││                                      █
+│  nixpkgs/ rPackages.minfiData        ││ output                               █
+│  nixpkgs/ sbclPackages.cl-glfw-open… ││ out                                  █
+│  home-manager/ home.pointerCursor.h… ││                                      ║
 │  home-manager/ programs.firefox.pro… ││                                      ║
 │  home-manager/ programs.git.difftas… ││                                      ║
 │  home-manager/ programs.kakoune.con… ││                                      ║
