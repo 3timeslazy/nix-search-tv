@@ -59,7 +59,7 @@ func CacheWriter(dir string) (io.WriteCloser, error) {
 		return nil, fmt.Errorf("init cache: %w", err)
 	}
 
-	return os.OpenFile(cpath, os.O_WRONLY, 0666)
+	return os.OpenFile(cpath, os.O_WRONLY|os.O_TRUNC, 0666)
 }
 
 func CacheReader(dir string) (io.ReadCloser, error) {

@@ -274,6 +274,33 @@ func TestPrintIndexing(t *testing.T) {
 }
 
 func TestPrint(t *testing.T) {
+	t.Run("reindexing with fewer entries removes stale keys", func(t *testing.T) {
+		state := setup(t)
+
+		big := []string{"a.one", "a.two"}
+		writeXdgConfig(t, state, map[string]any{
+			config.EnableWaitingMessageTag: false,
+		})
+		indices.SetFetchers(map[string]indexer.Fetcher{
+			indices.Nixpkgs: &PkgsFetcher{pkgs: big},
+		})
+
+		printCmd(t, "--indexes", indices.Nixpkgs)
+		actual := strings.Split(state.Stdout.String(), "\n")
+		assertSortEqual(t, append([]string{""}, big...), actual)
+
+		state.Stdout.Reset()
+		small := []string{"b"}
+		indices.SetFetchers(map[string]indexer.Fetcher{
+			indices.Nixpkgs: &PkgsFetcher{pkgs: small},
+		})
+		setMetadata(t, state, indices.Nixpkgs, indexer.IndexMetadata{})
+
+		printCmd(t, "--indexes", indices.Nixpkgs)
+		actual = strings.Split(state.Stdout.String(), "\n")
+		assertSortEqual(t, append([]string{""}, small...), actual)
+	})
+
 	t.Run("multiple builtin indexes", func(t *testing.T) {
 		state := setup(t)
 
