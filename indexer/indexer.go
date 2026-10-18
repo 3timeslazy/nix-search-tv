@@ -90,12 +90,6 @@ func runIndex(
 	}
 	defer pkgs.Close()
 
-	cache, err := CacheWriter(indexDir)
-	if err != nil {
-		return fmt.Errorf("open cache write: %w", err)
-	}
-	defer cache.Close()
-
 	badgerDir := filepath.Join(indexDir, "badger")
 	indexer, err := NewBadger(BadgerConfig{
 		Dir: badgerDir,
@@ -104,6 +98,12 @@ func runIndex(
 		return fmt.Errorf("open indexer: %w", err)
 	}
 	defer indexer.Close()
+
+	cache, err := CacheWriter(indexDir)
+	if err != nil {
+		return fmt.Errorf("open cache write: %w", err)
+	}
+	defer cache.Close()
 
 	err = indexer.Index(pkgs, cache)
 	if err != nil {
