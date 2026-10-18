@@ -36,23 +36,7 @@ func PrintAction(ctx context.Context, cmd *cli.Command) error {
 	if err != nil {
 		return fmt.Errorf("register fetchers: %w", err)
 	}
-
-	requested := available
-	if cmd.IsSet(IndexesFlag) {
-		flags := cmd.StringSlice(IndexesFlag)
-
-		requested = slices.DeleteFunc(requested, func(index string) bool {
-			return !slices.Contains(flags, index)
-		})
-	} else {
-		requested = slices.DeleteFunc(requested, func(index string) bool {
-			builtin := slices.Contains(conf.Indexes, index)
-			_, renderDocs := conf.Experimental.RenderDocsIndexes[index]
-			_, optionsFile := conf.Experimental.OptionsFile[index]
-			return !builtin && !renderDocs && !optionsFile
-		})
-	}
-
+	requested := calcRequestedIndexes(cmd, conf, available)
 	indexes, err := GetIndexes(conf.CacheDir, requested)
 	if err != nil {
 		return fmt.Errorf("get indexes: %w", err)

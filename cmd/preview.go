@@ -48,15 +48,16 @@ func NewPreviewAction(preview PreviewFunc) cli.ActionFunc {
 			conf.Indexes = cmd.StringSlice(IndexesFlag)
 		}
 
-		_, err = SetupIndexes(conf)
+		available, err := SetupIndexes(conf)
 		if err != nil {
 			return err
 		}
+		requested := calcRequestedIndexes(cmd, conf, available)
 
 		var index, pkgName string
 
-		if len(conf.Indexes) == 1 {
-			index = conf.Indexes[0]
+		if len(requested) == 1 {
+			index = requested[0]
 			pkgName = fullPkgName
 		} else {
 			var ok bool

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"slices"
 	"strings"
 
 	"github.com/3timeslazy/nix-search-tv/config"
@@ -94,4 +95,25 @@ func validateIndexes(conf config.Config, indexNames []string) error {
 	}
 
 	return nil
+}
+
+func calcRequestedIndexes(cmd *cli.Command, conf config.Config, available []string) []string {
+	requested := available
+
+	if cmd.IsSet(IndexesFlag) {
+		flags := cmd.StringSlice(IndexesFlag)
+
+		requested = slices.DeleteFunc(requested, func(index string) bool {
+			return !slices.Contains(flags, index)
+		})
+	} else {
+		requested = slices.DeleteFunc(requested, func(index string) bool {
+			builtin := slices.Contains(conf.Indexes, index)
+			_, renderDocs := conf.Experimental.RenderDocsIndexes[index]
+			_, optionsFile := conf.Experimental.OptionsFile[index]
+			return !builtin && !renderDocs && !optionsFile
+		})
+	}
+
+	return requested
 }
