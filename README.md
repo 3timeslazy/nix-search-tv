@@ -166,7 +166,7 @@ By default, the configuration file is looked at `$XDG_CONFIG_HOME/nix-search-tv/
   // More about experimental below
   "experimental": {
     "render_docs_indexes": {
-      "plasma": "https://nix-community.github.io/plasma-manager/options.xhtml",
+      "nix-on-droid": "https://nix-community.github.io/nix-on-droid/nix-on-droid-options.html",
     },
     "options_file": {
       "agenix": "<path to options.json>",
@@ -184,11 +184,7 @@ By default, the configuration file is looked at `$XDG_CONFIG_HOME/nix-search-tv/
 ```jsonc
 {
   "render_docs_indexes": {
-    // https://github.com/nix-community/plasma-manager
-    "plasma": "https://nix-community.github.io/plasma-manager/options.xhtml",
-    
-    // Home Manager is also a valid page
-    // https://nix-community.github.io/home-manager/options.xhtml
+    "nix-on-droid": "https://nix-community.github.io/nix-on-droid/nix-on-droid-options.html",
   },
 }
 ```
